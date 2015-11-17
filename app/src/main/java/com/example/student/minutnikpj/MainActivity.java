@@ -10,6 +10,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Timer t;
     private Boolean isTimerRuning = false;
+    private Boolean isPaused = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,8 +19,10 @@ public class MainActivity extends AppCompatActivity {
         Button start = (Button)findViewById(R.id.buttonStart);
         Button pause = (Button)findViewById(R.id.buttonPause);
         Button stop = (Button)findViewById(R.id.buttonStop);
-        //final Timer t = null;
 
+        /*
+        Declaring onClick events for add buttons
+         */
         Button addMinutes = (Button)findViewById(R.id.buttonAddMinutes);
         addMinutes.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,7 +55,9 @@ public class MainActivity extends AppCompatActivity {
                 Counter.setText(changeCounter(6,1,(String)Counter.getText()));
             }
         });
-
+        /*
+        Declaring onClick events on substract buttons
+         */
         Button substractMinutes = (Button)findViewById(R.id.buttonSubstractMinutes);
         substractMinutes.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,23 +87,28 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /*
+        Declaring onClick events on function buttons
+         */
         start.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
             {
-                if(!isTimerRuning) {
+                if((!isTimerRuning || isPaused) && (String)Counter.getText()!="00 : 00") {
                     t.start();
                     isTimerRuning = true;
+                    isPaused = false;
                 }
             }
         });
         stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isTimerRuning) {
+                if(isTimerRuning ) {
                     t.cancel();
                     Counter.setText("00 : 00");
                     changeCounter(0, 0, "00 : 00");
                     isTimerRuning = false;
+
                 }
             }
         });
@@ -106,20 +116,28 @@ public class MainActivity extends AppCompatActivity {
         pause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isTimerRuning) {
+                if(isTimerRuning ) {
                     t.cancel();
                     String tmp = (String) Counter.getText();
                     if (tmp.length() < 7) tmp = "0" + tmp;
                     changeCounter(0, 0, tmp);
+                    isPaused = true;
 
                 }
             }
         });
-        //Timer t = new Timer(this,30000,1000);
-        //t.start();
+
 
     }
-
+    /*
+    @pos-> its a position of digit in our textview, could be:
+        0 - tens of minutes
+        1 - single digit minutes
+        5 - tens of seconds
+        6 - single digit seconds
+    @sign-> +1 add, -1 substract, 0 do nothing
+    @counter->reference of current state of textview
+     */
     private String changeCounter(int pos, int sign, String counter)
     {
         //char a = counter.charAt(pos);
@@ -140,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
         return res;
     }
     /*
-        we calculate here the numerical value of our listbox
+        we calculate here the numerical value of our textview
     */
     public long getTime(String counter)
     {

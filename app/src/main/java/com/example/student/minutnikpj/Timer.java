@@ -33,6 +33,10 @@ public class Timer extends CountDownTimer{
 
 
     }
+    /*
+    We calculate the textview output for every second till finish
+     */
+
     private String updateCounter(long mUF)
     {
         //return new String((int)mUF/60000 + (mUF % 600000)/60000 +" : "+(mUF%60000)/10000+(mUF%10000)/1000);
